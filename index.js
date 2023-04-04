@@ -5,6 +5,8 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var mongoose = require('mongoose');
 
+var configs = require('./config');
+
 app.use(express.static(__dirname));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}))
@@ -14,8 +16,6 @@ var Message = mongoose.model("Message", {
   message: String,
   date: Date,
 });
-
-var dbUrl = "mongodb+srv://200506823:z1QVv8esv8O3cobj@cluster0.kmceijo.mongodb.net/?retryWrites=true&w=majority";
 
 app.get("/messages", (req, res) => {
   Message.find({}, (error, messages) => {
@@ -36,7 +36,7 @@ io.on('connection', () => {
     console.log('A User is connected!');
 });
 
-mongoose.connect(dbUrl, (err) => {
+mongoose.connect(configs.db, (err) => {
   console.log("MongoDB Connected", err);
 });
 
